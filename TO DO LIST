@@ -1,0 +1,117 @@
+import time
+
+# --- Data Structure ---
+# A dictionary to store the tasks.
+# Key: task ID (integer)
+# Value: a dictionary {'task': description (string), 'completed': status (boolean)}
+todo_list = {}
+task_id_counter = 1 # Used to assign a unique ID to each new task
+
+# --- Core Functions ---
+
+def add_task(task_description):
+    """Adds a new task to the to-do list."""
+    global task_id_counter
+    todo_list[task_id_counter] = {
+        'task': task_description,
+        'completed': False
+    }
+    print(f"\nTask '{task_description}' added successfully with ID: {task_id_counter}.")
+    task_id_counter += 1
+
+def view_tasks():
+    """Displays all tasks in the to-do list."""
+    if not todo_list:
+        print("\nYour to-do list is empty! Time to add a task.")
+        return
+
+    print("\n--- YOUR TO-DO LIST ---")
+    # Iterate through the dictionary items (ID and task data)
+    for id, task_data in todo_list.items():
+        # Determine the status string
+        status = "[DONE]" if task_data['completed'] else "[PENDING]"
+        # Print the task ID, status, and description
+        print(f"[{id}] {status:<10} {task_data['task']}")
+    print("------------------------")
+
+def mark_complete(task_id_str):
+    """Marks a task as completed."""
+    try:
+        task_id = int(task_id_str)
+        if task_id in todo_list:
+            if todo_list[task_id]['completed']:
+                print(f"\nTask {task_id} is already marked as complete.")
+            else:
+                todo_list[task_id]['completed'] = True
+                print(f"\nTask {task_id} marked as complete: '{todo_list[task_id]['task']}'")
+        else:
+            print(f"\nError: Task ID {task_id} not found.")
+    except ValueError:
+        print("\nError: Please enter a valid number for the Task ID.")
+
+def delete_task(task_id_str):
+    """Deletes a task from the to-do list."""
+    try:
+        task_id = int(task_id_str)
+        if task_id in todo_list:
+            # Use pop() to remove the item and get its value (the task data)
+            deleted_task = todo_list.pop(task_id)
+            print(f"\nTask {task_id} deleted: '{deleted_task['task']}'")
+        else:
+            print(f"\nError: Task ID {task_id} not found.")
+    except ValueError:
+        print("\nError: Please enter a valid number for the Task ID.")
+
+def display_menu():
+    """Displays the main application menu."""
+    print("\n\n=== To-Do List Application ===")
+    print("1. Add New Task")
+    print("2. View Tasks")
+    print("3. Mark Task as Complete")
+    print("4. Delete Task")
+    print("5. Exit")
+    return input("Choose an option (1-5): ")
+
+# --- Main Application Loop ---
+
+def main():
+    """Runs the main To-Do List application."""
+    while True:
+        choice = display_menu()
+
+        if choice == '1':
+            task = input("Enter the task description: ").strip()
+            if task:
+                add_task(task)
+            else:
+                print("Task description cannot be empty.")
+            time.sleep(1) # Pause for readability
+
+        elif choice == '2':
+            view_tasks()
+            time.sleep(1.5)
+
+        elif choice == '3':
+            view_tasks()
+            if todo_list:
+                task_id = input("Enter the ID of the task to mark as complete: ")
+                mark_complete(task_id)
+            time.sleep(1.5)
+
+        elif choice == '4':
+            view_tasks()
+            if todo_list:
+                task_id = input("Enter the ID of the task to delete: ")
+                delete_task(task_id)
+            time.sleep(1.5)
+
+        elif choice == '5':
+            print("\nThank you for using the To-Do List Application! Goodbye.")
+            break
+
+        else:
+            print("\nInvalid choice. Please select a number between 1 and 5.")
+            time.sleep(1)
+
+if __name__ == "__main__":
+    main()
